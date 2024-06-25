@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -14,5 +15,6 @@ namespace CoreData.Interfaces
         Task<IReadOnlyList<T>> ListAllAsync();
         Task<T> GetByIdAsyncWithSpec(ISpecification<T> spec);
         Task<IReadOnlyList<T>> ListAllAsyncWithSpec(ISpecification<T> spec);
+        Task<int> CountAsync(ISpecification<T> spec);
     }
 }
