@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using CoreData.Entities;
 using CoreData.Entities.OrderAggregate;
 using CoreData.Interfaces;
+using CoreData.Specifications;
 
 namespace Infrastructure.Services
 {
@@ -49,14 +50,18 @@ namespace Infrastructure.Services
             throw new NotImplementedException();
         }
 
-        public Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
+        public async Task<Order> GetOrderByIdAsync(int id, string buyerEmail)
         {
-            throw new NotImplementedException();
+            var spec = new OrderWithItemsAndOrderingSpecification(id, buyerEmail);
+
+            return await unitOfWork.Repository<Order>().GetByIdAsyncWithSpec(spec);
         }
 
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
         {
-            throw new NotImplementedException();
+            var spec = new OrderWithItemsAndOrderingSpecification(buyerEmail);
+
+            return await unitOfWork.Repository<Order>().ListAllAsyncWithSpec(spec);
         }
     }
 }
