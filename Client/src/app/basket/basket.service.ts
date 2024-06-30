@@ -44,7 +44,7 @@ export class BasketService {
   setShippingPrice(deliveryMethod: IDeliveryMethod) {
     this.shipping = deliveryMethod.price;
     const basket = this.getCurrentBasketValue();
-    if(basket){
+    if (basket) {
       basket.deliveryMethodId = deliveryMethod.id;
       basket.shippingPrice = deliveryMethod.price;
       this.calculateTotals();
@@ -100,13 +100,17 @@ export class BasketService {
   deleteBasket(basket: IBasket) {
     return this.http.delete(this.baseUrl + 'basket?id=' + basket.id).subscribe(
       () => {
-        this.basketSource.next(null);
-        localStorage.removeItem('basket_id');
+        this.deleteLocalBasket();
       },
       (error) => {
         console.log(error);
       }
     );
+  }
+  deleteLocalBasket() {
+    this.basketSource.next(null);
+    this.basketTotalSource.next(null);
+    localStorage.removeItem('basket_id');
   }
   private addorUpdateItems(
     items: IBasketItem[],
@@ -144,12 +148,11 @@ export class BasketService {
   }
   private calculateTotals() {
     const basket = this.getCurrentBasketValue();
-    const shipping = 0;
     let subtotal = 0;
     if (basket) {
       subtotal = basket.items.reduce((a, b) => b.price * b.quantity + a, 0);
     }
-    const total = subtotal + shipping;
-    this.basketTotalSource.next({ shipping, total, subtotal });
+    const total = subtotal + this.shipping;
+    this.basketTotalSource.next({ shipping: this.shipping, total, subtotal });
   }
 }
