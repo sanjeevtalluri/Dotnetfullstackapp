@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Basket, IBasket, IBasketItem, IBasketTotals } from '../shared/models/basket';
+import {
+  Basket,
+  IBasket,
+  IBasketItem,
+  IBasketTotals,
+} from '../shared/models/basket';
+import { IDeliveryMethod } from '../shared/models/deliveryMethod';
 import { Product } from '../shared/models/product';
 
 @Injectable({
@@ -14,6 +20,7 @@ export class BasketService {
   basketSource$ = this.basketSource.asObservable();
   private basketTotalSource = new BehaviorSubject<IBasketTotals | null>(null);
   basketTotalSource$ = this.basketTotalSource.asObservable();
+  shipping: number = 0;
   constructor(private http: HttpClient) {}
 
   getBasket(id: string) {
@@ -34,6 +41,17 @@ export class BasketService {
     });
   }
 
+  setShippingPrice(deliveryMethod: IDeliveryMethod) {
+    this.shipping = deliveryMethod.price;
+    const basket = this.getCurrentBasketValue();
+    if(basket){
+      basket.deliveryMethodId = deliveryMethod.id;
+      basket.shippingPrice = deliveryMethod.price;
+      this.calculateTotals();
+      this.setBasket(basket);
+    }
+  }
+
   getCurrentBasketValue() {
     return this.basketSource.value;
   }
@@ -47,7 +65,7 @@ export class BasketService {
   incrementItemQuantity(item: IBasketItem) {
     const basket = this.getCurrentBasketValue();
     const foundItemIndex = basket?.items.findIndex((x) => x.id === item.id);
-    if (basket && foundItemIndex!=null) {
+    if (basket && foundItemIndex != null) {
       basket.items[foundItemIndex].quantity++;
       this.setBasket(basket);
     }
@@ -57,7 +75,7 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     const foundItemIndex =
       basket && basket.items.findIndex((x) => x.id === item.id);
-    if (basket && foundItemIndex!=null) {
+    if (basket && foundItemIndex != null) {
       if (basket.items[foundItemIndex].quantity > 1) {
         basket.items[foundItemIndex].quantity--;
         this.setBasket(basket);
@@ -128,10 +146,10 @@ export class BasketService {
     const basket = this.getCurrentBasketValue();
     const shipping = 0;
     let subtotal = 0;
-    if(basket){
-      subtotal = basket.items.reduce((a, b) => (b.price * b.quantity) + a, 0);
+    if (basket) {
+      subtotal = basket.items.reduce((a, b) => b.price * b.quantity + a, 0);
     }
     const total = subtotal + shipping;
-    this.basketTotalSource.next({shipping, total, subtotal});
+    this.basketTotalSource.next({ shipping, total, subtotal });
   }
 }

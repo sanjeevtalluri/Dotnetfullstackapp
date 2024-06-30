@@ -3,6 +3,8 @@ import * as cuid from "cuid";
 export interface IBasket {
     id: string;
     items: IBasketItem[];
+    deliveryMethodId?: number;
+    shippingPrice?: number;
 }
 
 export interface IBasketItem {
