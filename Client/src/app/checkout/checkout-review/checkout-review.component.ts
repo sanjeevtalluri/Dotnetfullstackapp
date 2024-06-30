@@ -8,4 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class CheckoutReviewComponent {
   @Input() appStepper ?: FormGroup;
+  createPaymentIntent(){
+    
+  }
 }

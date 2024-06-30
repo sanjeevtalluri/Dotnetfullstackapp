@@ -13,6 +13,7 @@ export class CheckoutComponent implements OnInit {
   constructor(private fb: FormBuilder, private accountService: AccountService, private basketService: BasketService) { }
   ngOnInit(): void {
     this.createCheckoutForm();
+    this.getAddressFormValues();
   }
   createCheckoutForm() {
     this.checkoutForm = this.fb.group({
@@ -30,6 +31,15 @@ export class CheckoutComponent implements OnInit {
       paymentForm: this.fb.group({
         nameOnCard: [null, Validators.required]
       })
+    });
+  }
+  getAddressFormValues() {
+    this.accountService.getUserAddress().subscribe(address => {
+      if (address) {
+        this.checkoutForm?.get('addressForm')?.patchValue(address);
+      }
+    }, error => {
+      console.log(error);
     });
   }
 }

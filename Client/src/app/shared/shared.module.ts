@@ -11,6 +11,7 @@ import { TextInputComponent } from './components/text-input/text-input.component
 import { StepperComponent } from './components/stepper/stepper.component';
 import {CdkStepperModule} from '@angular/cdk/stepper';
 import { BasketSummaryComponent } from './basket-summary/basket-summary.component';
+import { RouterModule } from '@angular/router';
 
 
 
@@ -29,7 +30,8 @@ import { BasketSummaryComponent } from './basket-summary/basket-summary.componen
     CarouselModule.forRoot(),
     ReactiveFormsModule,
     BsDropdownModule.forRoot(),
-    CdkStepperModule
+    CdkStepperModule,
+    RouterModule
   ],
   exports:[
     PaginationModule,
@@ -41,7 +43,8 @@ import { BasketSummaryComponent } from './basket-summary/basket-summary.componen
     BsDropdownModule,
     TextInputComponent,
     StepperComponent,
-    CdkStepperModule
+    CdkStepperModule,
+    BasketSummaryComponent
   ]
 })
 export class SharedModule { }
